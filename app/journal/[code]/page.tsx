@@ -153,16 +153,39 @@ function JournalPage() {
   // Handle copying the invite code to clipboard
   const handleCopyInviteCode = () => {
     if (code) {
-      navigator.clipboard.writeText(code)
-        .then(() => {
-          setInviteCopied(true);
-          setTimeout(() => setInviteCopied(false), 2000);
-        })
-        .catch((error) => {
-          console.error("Failed to copy invite code:", error);
-        });
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code)
+          .then(() => {
+            setInviteCopied(true);
+            setTimeout(() => setInviteCopied(false), 2000);
+          })
+          .catch((error) => {
+            console.error("Failed to copy invite code:", error);
+          });
+      } else {
+        // Fallback for browsers without clipboard API in insecure context
+        const textarea = document.createElement("textarea");
+        textarea.value = code;
+        textarea.style.position = "fixed"; // Prevent scrolling to bottom
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        try {
+          const successful = document.execCommand("copy");
+          if (successful) {
+            setInviteCopied(true);
+            setTimeout(() => setInviteCopied(false), 2000);
+          } else {
+            console.error("Fallback: Copy command was unsuccessful");
+          }
+        } catch (err) {
+          console.error("Fallback: Unable to copy", err);
+        }
+        document.body.removeChild(textarea);
+      }
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-100 to-orange-300 text-gray-900 p-4 flex flex-col">
