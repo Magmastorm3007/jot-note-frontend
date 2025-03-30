@@ -107,7 +107,7 @@ function HomePage() {
 
       if (!response.ok) throw new Error("Invalid journal code");
 
-      const data: { code: string } = await response.json();
+      //const data: { code: string } = await response.json();
       router.push(`/journal/${journalCode}`);
     } catch (error) {
       console.error("Error joining journal:", error);

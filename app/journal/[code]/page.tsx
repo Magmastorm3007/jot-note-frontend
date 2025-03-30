@@ -8,7 +8,7 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { io, Socket } from "socket.io-client";
 import { fetchWithAuth } from "@/utils/api";
-import EmojiPicker from "emoji-picker-react";
+import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 
 type Message = {
   id: string;
@@ -66,7 +66,7 @@ function JournalPage() {
       newSocket.emit("joinJournalRoom", code);
     });
 
-    newSocket.on("newJournalEntry", (entry: any) => {
+    newSocket.on("newJournalEntry", (entry: Message) => {
       console.log("New entry received:", entry);
       // Using entry.date for the timestamp
       setMessages((prev) => [
@@ -145,7 +145,7 @@ function JournalPage() {
   );
 
   // Handle emoji click from the picker
-  const onEmojiClick = (emojiData: any, event: MouseEvent) => {
+  const onEmojiClick = (emojiData: EmojiClickData) => {
     setNewMessage((prevMessage) => prevMessage + emojiData.emoji);
     setShowEmojiPicker(false);
   };
@@ -192,9 +192,10 @@ function JournalPage() {
       <Card className="mb-4 bg-yellow-100 shadow-2xl">
         <CardHeader>
           <CardTitle className="mt-2 text-lg text-gray-700">
-            Enjoy a Good Conversation! Have a Coffee ☕ !
+          Enjoy a Good Conversation! Have a Coffee ☕ !
+
           </CardTitle>
-          {topic && <p className="mt-2 text-lg italic text-gray-700">Today's Topic: {topic}</p>}
+          {topic && <p className="mt-2 text-lg italic text-gray-700">Topic: {topic}</p>}
           {code && (
             <div className="mt-2 flex items-center gap-2">
               <span className="text-md text-orange-700">Add a friend</span>

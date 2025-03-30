@@ -40,7 +40,7 @@ export default function SignupPage() {
         setError(data.message || 'Signup failed');
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError('Network error. Please try again.'+err);
     }
   };
 
